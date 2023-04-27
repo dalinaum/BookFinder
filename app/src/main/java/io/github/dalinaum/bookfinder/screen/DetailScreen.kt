@@ -34,6 +34,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import io.github.dalinaum.bookfinder.entity.Item
 import io.github.dalinaum.bookfinder.entity.getBigImage
+import io.github.dalinaum.bookfinder.screen.composable.Loading
 import io.github.dalinaum.bookfinder.ui.theme.WColorLight
 import io.github.dalinaum.bookfinder.viewmodel.DetailViewModel
 import io.github.dalinaum.bookfinder.viewmodel.status.DetailResult
