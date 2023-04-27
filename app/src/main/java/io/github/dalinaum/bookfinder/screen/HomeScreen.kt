@@ -1,5 +1,6 @@
 package io.github.dalinaum.bookfinder.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -79,6 +80,19 @@ fun HomeScreen(
             ) {
                 val onItemRowClicked = { id: String ->
                     navController.navigate("Detail/$id")
+                }
+                if (viewModel.volumeList.isNullOrEmpty()) {
+                    item {
+                        AnimatedVisibility(
+                            visible = viewModel.currentQuery.isBlank()
+                        ) {
+                            Text(
+                                text = "검색할 책을 입력해주세요.",
+                                fontSize = 20.sp,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                    }
                 }
                 items(
                     items = viewModel.volumeList,
