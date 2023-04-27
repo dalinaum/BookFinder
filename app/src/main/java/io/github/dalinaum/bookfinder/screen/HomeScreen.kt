@@ -1,11 +1,13 @@
 package io.github.dalinaum.bookfinder.screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,21 +29,25 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import coil.size.Size
 import io.github.dalinaum.bookfinder.entity.VolumeInfo
 import io.github.dalinaum.bookfinder.entity.getThumbnail
 import io.github.dalinaum.bookfinder.screen.composable.ErrorDialog
 import io.github.dalinaum.bookfinder.screen.composable.Loading
+import io.github.dalinaum.bookfinder.screen.composable.LoadingAnimation
 import io.github.dalinaum.bookfinder.screen.composable.SearchField
 import io.github.dalinaum.bookfinder.viewmodel.HomeViewModel
 import io.github.dalinaum.bookfinder.viewmodel.HomeViewModel.Companion.PREFETCH_SIZE
@@ -170,15 +176,32 @@ private fun ItemRow(
             Row(
                 modifier = Modifier.heightIn(min = 80.dp)
             ) {
-                AsyncImage(
-                    model = volumeInfo.imageLinks.getThumbnail(),
-                    contentDescription = "${volumeInfo.title}의 이미지",
-                    contentScale = ContentScale.FillBounds,
-                    placeholder = ColorPainter(Color.LightGray),
-                    modifier = Modifier
-                        .width(70.dp)
-                        .align(CenterVertically)
+                val painter = rememberAsyncImagePainter(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(volumeInfo.imageLinks.getThumbnail())
+                        .size(Size.ORIGINAL)
+                        .build()
                 )
+                if (painter.state is AsyncImagePainter.State.Loading) {
+                    Box(
+                        modifier = Modifier
+                            .width(70.dp)
+                            .aspectRatio(1f)
+                    ) {
+                        LoadingAnimation(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+                } else {
+                    Image(
+                        painter = painter,
+                        contentDescription = "${volumeInfo.title}의 이미지",
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .width(70.dp)
+                            .align(CenterVertically)
+                    )
+                }
                 Column(
                     modifier = Modifier
                         .padding(4.dp, 8.dp, 32.dp, 8.dp)

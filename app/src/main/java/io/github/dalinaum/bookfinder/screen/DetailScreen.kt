@@ -1,8 +1,12 @@
 package io.github.dalinaum.bookfinder.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +27,7 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,11 +36,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import io.github.dalinaum.bookfinder.entity.Item
 import io.github.dalinaum.bookfinder.entity.getBigImage
 import io.github.dalinaum.bookfinder.screen.composable.ErrorDialog
 import io.github.dalinaum.bookfinder.screen.composable.Loading
+import io.github.dalinaum.bookfinder.screen.composable.LoadingAnimation
 import io.github.dalinaum.bookfinder.ui.theme.WColorLight
 import io.github.dalinaum.bookfinder.viewmodel.DetailViewModel
 import io.github.dalinaum.bookfinder.viewmodel.status.DetailResult
@@ -106,8 +114,25 @@ private fun DetailSuccess(
             .fillMaxWidth()
             .verticalScroll(scrollState)
     ) {
-        AsyncImage(
-            model = item.volumeInfo.imageLinks.getBigImage(),
+        val painter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(item.volumeInfo.imageLinks.getBigImage())
+                .size(coil.size.Size.ORIGINAL)
+                .build()
+        )
+        if (painter.state is AsyncImagePainter.State.Loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .aspectRatio(1f)
+            ) {
+                LoadingAnimation(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
+        Image(
+            painter = painter,
             contentDescription = item.volumeInfo.description,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
