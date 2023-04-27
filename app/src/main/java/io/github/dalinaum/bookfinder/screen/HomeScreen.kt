@@ -246,8 +246,9 @@ private fun SearchField(
 @Composable
 private fun Error() {
     Text(
-        text = "에러가 발생했습니다. 다시 시도해주세요.",
+        text = "에러가 발생했습니다.\n\n 다시 시도해주세요.",
         modifier = Modifier
+            .padding(20.dp)
             .fillMaxWidth()
             .wrapContentWidth(Alignment.CenterHorizontally)
     )
