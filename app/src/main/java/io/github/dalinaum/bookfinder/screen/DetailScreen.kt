@@ -33,7 +33,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import io.github.dalinaum.bookfinder.entity.Item
 import io.github.dalinaum.bookfinder.entity.getBigImage
-import io.github.dalinaum.bookfinder.screen.composable.Error
+import io.github.dalinaum.bookfinder.screen.composable.ErrorDialog
 import io.github.dalinaum.bookfinder.screen.composable.Loading
 import io.github.dalinaum.bookfinder.ui.theme.WColorLight
 import io.github.dalinaum.bookfinder.viewmodel.DetailViewModel
@@ -71,7 +71,7 @@ fun DetailScreen(
             is DetailResult.Error -> {
                 val error = result as DetailResult.Error
                 val errorMessage = "$id 에서 에러가 발생했습니다.\n\n${error.exception.message}"
-                Error(
+                ErrorDialog(
                     message = errorMessage,
                     onConfirmButtonClicked = {
                         navController.navigateUp()

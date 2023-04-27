@@ -38,7 +38,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import io.github.dalinaum.bookfinder.entity.VolumeInfo
 import io.github.dalinaum.bookfinder.entity.getThumbnail
-import io.github.dalinaum.bookfinder.screen.composable.Error
+import io.github.dalinaum.bookfinder.screen.composable.ErrorDialog
 import io.github.dalinaum.bookfinder.screen.composable.Loading
 import io.github.dalinaum.bookfinder.screen.composable.SearchField
 import io.github.dalinaum.bookfinder.viewmodel.HomeViewModel
@@ -100,7 +100,7 @@ fun HomeScreen(
                     is LoadStatus.ERROR -> {
                         val error = viewModel.loadStatus as LoadStatus.ERROR
                         item {
-                            Error(
+                            ErrorDialog(
                                 message = error.exception.message ?: "에러가 났습니다."
                             )
                         }
