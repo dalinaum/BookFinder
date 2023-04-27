@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
 
     var currentQuery by mutableStateOf("")
     var canPaginate by mutableStateOf(false)
-    var loadStatus by mutableStateOf(LoadStatus.IDLE)
+    var loadStatus by mutableStateOf<LoadStatus>(LoadStatus.IDLE)
     val volumeList = mutableStateListOf<Item>()
 
     fun loadData(
@@ -49,7 +49,7 @@ class HomeViewModel @Inject constructor(
             Log.d(TAG, e.message ?: "")
             e.printStackTrace()
             canPaginate = false
-            LoadStatus.ERROR
+            LoadStatus.ERROR(e)
         }
     }
 

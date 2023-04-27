@@ -1,8 +1,8 @@
 package io.github.dalinaum.bookfinder.viewmodel.status
 
-enum class LoadStatus {
-    IDLE,
-    LOADING,
-    APPENDING,
-    ERROR
+sealed class LoadStatus {
+    object IDLE : LoadStatus()
+    object LOADING : LoadStatus()
+    object APPENDING : LoadStatus()
+    data class ERROR(val exception: Exception) : LoadStatus()
 }

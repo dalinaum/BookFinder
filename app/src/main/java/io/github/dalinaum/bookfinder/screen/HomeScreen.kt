@@ -12,12 +12,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
@@ -28,10 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +38,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import io.github.dalinaum.bookfinder.entity.VolumeInfo
 import io.github.dalinaum.bookfinder.entity.getThumbnail
+import io.github.dalinaum.bookfinder.screen.composable.Error
 import io.github.dalinaum.bookfinder.screen.composable.Loading
 import io.github.dalinaum.bookfinder.screen.composable.SearchField
 import io.github.dalinaum.bookfinder.viewmodel.HomeViewModel
@@ -102,9 +97,12 @@ fun HomeScreen(
                         }
                     }
 
-                    LoadStatus.ERROR -> {
+                    is LoadStatus.ERROR -> {
+                        val error = viewModel.loadStatus as LoadStatus.ERROR
                         item {
-                            Error()
+                            Error(
+                                message = error.exception.message ?: "에러가 났습니다."
+                            )
                         }
                     }
 
@@ -195,42 +193,6 @@ private fun ItemRow(
                 .padding(12.dp, 0.dp)
                 .fillMaxWidth()
                 .height(1.dp)
-        )
-    }
-}
-
-@Composable
-private fun Error() {
-    var shouldShowDialog by remember {
-        mutableStateOf(true)
-    }
-    if (shouldShowDialog) {
-        AlertDialog(
-            onDismissRequest = {
-            },
-            text = {
-                Text(
-                    text = "에러가 발생했습니다.\n다시 시도해주세요.",
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .fillMaxWidth()
-                        .wrapContentWidth(Alignment.CenterHorizontally)
-                )
-            },
-            title = {
-                Text("에러")
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        shouldShowDialog = false
-                    }
-                ) {
-                    Text(
-                        text = "확인"
-                    )
-                }
-            }
         )
     }
 }

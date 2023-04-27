@@ -1,7 +1,6 @@
 package io.github.dalinaum.bookfinder.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +33,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import io.github.dalinaum.bookfinder.entity.Item
 import io.github.dalinaum.bookfinder.entity.getBigImage
+import io.github.dalinaum.bookfinder.screen.composable.Error
 import io.github.dalinaum.bookfinder.screen.composable.Loading
 import io.github.dalinaum.bookfinder.ui.theme.WColorLight
 import io.github.dalinaum.bookfinder.viewmodel.DetailViewModel
@@ -69,7 +69,14 @@ fun DetailScreen(
     ) {
         when (result) {
             is DetailResult.Error -> {
-                DetailError(id, navController)
+                val error = result as DetailResult.Error
+                val errorMessage = "$id 에서 에러가 발생했습니다.\n\n${error.exception.message}"
+                Error(
+                    message = errorMessage,
+                    onConfirmButtonClicked = {
+                        navController.navigateUp()
+                    }
+                )
             }
 
             is DetailResult.Success -> {
@@ -166,31 +173,6 @@ private fun DetailSuccess(
 
 fun String?.removeHtml(): String =
     this?.replace("<br>", "\n\n") ?: ""
-
-@Composable
-private fun DetailError(
-    id: String,
-    navController: NavController
-) {
-    Box {
-        Column(
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            Text(
-                text = "에러가 발생했습니다. $id"
-            )
-            Button(
-                onClick = {
-                    navController.navigateUp()
-                }
-            ) {
-                Text(
-                    text = "뒤로 돌아가기"
-                )
-            }
-        }
-    }
-}
 
 @Composable
 private fun BookFinderTopBar(
