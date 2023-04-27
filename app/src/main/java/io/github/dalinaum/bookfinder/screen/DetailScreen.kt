@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -108,6 +109,7 @@ private fun DetailSuccess(
         AsyncImage(
             model = item.volumeInfo.imageLinks.getBigImage(),
             contentDescription = item.volumeInfo.description,
+            contentScale = ContentScale.FillWidth,
             modifier = Modifier
                 .background(WColorLight)
                 .fillMaxWidth()

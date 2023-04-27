@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -172,6 +173,7 @@ private fun ItemRow(
                 AsyncImage(
                     model = volumeInfo.imageLinks.getThumbnail(),
                     contentDescription = "${volumeInfo.title}의 이미지",
+                    contentScale = ContentScale.FillBounds,
                     placeholder = ColorPainter(Color.LightGray),
                     modifier = Modifier
                         .width(70.dp)
