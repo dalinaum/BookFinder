@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
@@ -47,6 +48,7 @@ import io.github.dalinaum.bookfinder.screen.composable.LoadingAnimation
 import io.github.dalinaum.bookfinder.ui.theme.WColorLight
 import io.github.dalinaum.bookfinder.viewmodel.DetailViewModel
 import io.github.dalinaum.bookfinder.viewmodel.status.DetailResult
+import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun DetailScreen(
@@ -58,22 +60,20 @@ fun DetailScreen(
         viewModel.id.value = id
     }
 
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val result by produceState<DetailResult<Item>>(
-        initialValue = DetailResult.InitialState,
-        key1 = lifecycle,
-        key2 = viewModel
-    ) {
-        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-            viewModel.volume.collect {
-                value = it
-            }
-        }
+    val result by viewModel.volume.collectAsState()
+    val title = if (result is DetailResult.Success) {
+        val success = result as DetailResult.Success
+        success.value.volumeInfo.title
+    } else {
+        "BookFinder"
     }
 
     Scaffold(
         topBar = {
-            BookFinderTopBar(navController)
+            BookFinderTopBar(
+                navController,
+                title
+            )
         }
     ) {
         when (result) {
@@ -99,6 +99,21 @@ fun DetailScreen(
             DetailResult.InitialState -> {
                 Loading()
             }
+        }
+    }
+}
+
+@Composable
+private fun Flow<DetailResult<Item>>.collectAsState(
+    lifecycle: Lifecycle = LocalLifecycleOwner.current.lifecycle
+): State<DetailResult<Item>> = produceState<DetailResult<Item>>(
+    initialValue = DetailResult.InitialState,
+    key1 = lifecycle,
+    key2 = this
+) {
+    lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+        this@collectAsState.collect {
+            value = it
         }
     }
 }
@@ -203,7 +218,8 @@ fun String?.removeHtml(): String =
 
 @Composable
 private fun BookFinderTopBar(
-    navController: NavController
+    navController: NavController,
+    title: String = "BookFinder"
 ) {
     TopAppBar(
         navigationIcon = {
@@ -220,7 +236,7 @@ private fun BookFinderTopBar(
         },
         title = {
             Text(
-                text = "BookFinder"
+                text = title
             )
         }
     )
