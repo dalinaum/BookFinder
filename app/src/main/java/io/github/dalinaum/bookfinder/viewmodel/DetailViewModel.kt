@@ -17,6 +17,7 @@ class DetailViewModel @Inject constructor(
 ) : ViewModel() {
     val id: MutableStateFlow<String> = MutableStateFlow("")
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val volume: Flow<DetailResult<Item>> = id.mapLatest {
         try {
             if (id.value.isBlank()) {
