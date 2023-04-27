@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val googleBooksService: GoogleBooksService
+    private val googleBooksService: GoogleBooksService,
 ) : ViewModel() {
     private var startIndex = 0
 
@@ -37,7 +37,8 @@ class HomeViewModel @Inject constructor(
         loadStatus = try {
             googleBooksService.getVolumes(
                 query = currentQuery,
-                startIndex = startIndex
+                startIndex = startIndex,
+                maxResults = MAX_RESULTS
             ).items.let { items ->
                 volumeList.addAll(items)
                 val nextStartIndex = startIndex + items.count()
@@ -55,5 +56,7 @@ class HomeViewModel @Inject constructor(
 
     companion object {
         const val TAG = "HomeViewModel"
+        const val PREFETCH_SIZE: Int = 10
+        const val MAX_RESULTS: Int = 40
     }
 }

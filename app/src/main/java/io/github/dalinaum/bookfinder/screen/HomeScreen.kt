@@ -42,6 +42,7 @@ import io.github.dalinaum.bookfinder.screen.composable.ErrorDialog
 import io.github.dalinaum.bookfinder.screen.composable.Loading
 import io.github.dalinaum.bookfinder.screen.composable.SearchField
 import io.github.dalinaum.bookfinder.viewmodel.HomeViewModel
+import io.github.dalinaum.bookfinder.viewmodel.HomeViewModel.Companion.PREFETCH_SIZE
 import io.github.dalinaum.bookfinder.viewmodel.status.LoadStatus
 
 @Composable
@@ -127,7 +128,7 @@ private fun LoadMoreDataIfNeeded(
     val shouldLoadData by remember {
         derivedStateOf {
             viewModel.canPaginate && (listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                ?: -10) >= (listState.layoutInfo.totalItemsCount - 5)
+                ?: -(PREFETCH_SIZE * 2)) >= (listState.layoutInfo.totalItemsCount - PREFETCH_SIZE)
         }
     }
     LaunchedEffect(shouldLoadData) {
