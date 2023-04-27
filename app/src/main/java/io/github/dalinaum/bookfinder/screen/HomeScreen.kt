@@ -191,7 +191,10 @@ private fun ItemRow(
         }
         Divider(
             modifier = Modifier
-                .padding(12.dp, 0.dp)
+                .padding(
+                    horizontal = 12.dp,
+                    vertical = 0.dp
+                )
                 .fillMaxWidth()
                 .height(1.dp)
         )
